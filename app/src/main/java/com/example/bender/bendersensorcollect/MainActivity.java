@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText etName;
     private ProgressBar progressBar;
     private TextView tvOutput;
-    private long period;
+    private long period;    //Sampling time selected by the user
 
     private static final int REQUEST_LOCATION_PERMISSION = 1;
 
@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         for (Sensor sensor : deviceSensor)
         {
+            //exclude significant motion trigger sensor (Require another listener)
             if (sensor.getType() == Sensor.TYPE_SIGNIFICANT_MOTION) {
                 continue;
             }
@@ -115,9 +116,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    //Call a TimerTask every [period] seconds
     public void callAsynchronousTask() {
+
         final Handler handler = new Handler();
         Timer timer = new Timer();
+
+        //get spinner selected value
         period = Long.parseLong(spinner_list[mSpinner.getSelectedItemPosition()]) * 1000;
 
         doAsynchronousTask = new TimerTask() {
@@ -140,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
             }
         };
+        //execute a TimerTask every [period] seconds with no delay [0]
         timer.schedule(doAsynchronousTask, 0, period);
     }
 
@@ -147,10 +153,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.Start:
-                if (etName.getText().toString().isEmpty()) {
+                if (etName.getText().toString().isEmpty()) {  //_id not inserted
                     Toast.makeText(this, R.string.str_insertName, Toast.LENGTH_SHORT).show();
                     break;
                 }
+                //check GPS Permissions
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                     requestLocationPermissions();
@@ -177,12 +184,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    //Stop all the AsyncTasks
     private void cancelTasks() {
         for (AsyncTask task: taskList) {
             if (task != null)
                 task.cancel(true);
         }
     }
+
 
     void requestLocationPermissions() {
         String locationPermissions[] =

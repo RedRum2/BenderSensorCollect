@@ -24,7 +24,7 @@ public class SenderTask extends AsyncTask <Void,Void,Void> {
     private DbAdapter db;
     private Context context;
     private Cursor cursor;
-    private static int position;
+    private static int position;        //Database position of the last sent record
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
 
@@ -42,12 +42,13 @@ public class SenderTask extends AsyncTask <Void,Void,Void> {
         position = prefs.getInt("position", 0);
 
         String msgResp = sendPostMsg();
+        //If the message success check database dimension and update position
         if (Objects.equals(msgResp, "1")) {
             checkdbdimension();
             position = cursor.getPosition();
-//            cursor.close();
+            cursor.close();
 
-
+        //Save position into SharedPreferences
             SharedPreferences.Editor editor = context.getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit();
             editor.putInt("position", position);
             editor.apply();
@@ -57,23 +58,26 @@ public class SenderTask extends AsyncTask <Void,Void,Void> {
         return null;
     }
 
+    //Send http post message
     private String sendPostMsg() {
         StringBuilder sb = null;
         try {
-            URL paginaurl = new URL("http://www.tottoryan.altervista.org/SensorServerPost.php");
-            HttpURLConnection client = (HttpURLConnection) paginaurl.openConnection();
 
-            //CREARW LA STRINGA DI INVIO
-            String datipost = fillData();
+            URL mUrl = new URL("http://www.tottoryan.altervista.org/SensorServerPost.php");
 
+            HttpURLConnection client = (HttpURLConnection) mUrl.openConnection();
+            
+            String msgBody = fillData();
+            //Sets the flag indicating whether this URLConnection allows output
             client.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(client.getOutputStream());
-            wr.write(datipost);
+            wr.write(msgBody);
             wr.flush();
-            InputStream risposta= new BufferedInputStream(client.getInputStream());
+            InputStream response= new BufferedInputStream(client.getInputStream());
             sb = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(risposta));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(response));
             String nextline;
+            //Read server response
             while ((nextline = reader.readLine()) != null)
                 sb.append(nextline);
 
@@ -85,6 +89,7 @@ public class SenderTask extends AsyncTask <Void,Void,Void> {
         return sb.toString();
     }
 
+    //Fetch all records from the database an create the proper string for the body of the post msg
     private String fillData() {
 
         db.open();
@@ -120,13 +125,13 @@ public class SenderTask extends AsyncTask <Void,Void,Void> {
         return data;
     }
 
-
+    //Check the database dimension
     private void checkdbdimension()
     {
         if(cursor.getPosition() > 1000)
         {
             db.open();
-            db.delete();
+            db.delete(); //delete all sent records
 //            db.close();
             cursor.moveToFirst();
         }
