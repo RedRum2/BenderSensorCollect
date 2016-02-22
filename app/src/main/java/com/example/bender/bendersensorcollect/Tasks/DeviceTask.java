@@ -23,7 +23,6 @@ import java.util.Date;
 
 public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
 
-    private ConnectivityManager mConnectivityManager;
     private LocationManager mLocationManager;
     private DbAdapter mDbHelper;
 
@@ -32,9 +31,8 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
     private long period;
 
 
-    public DeviceTask(String id, long p, ConnectivityManager cm, LocationManager lm, DbAdapter db, Context c) {
-        mConnectivityManager = cm;
-        mLocationManager = lm;
+    public DeviceTask(String id, long p, DbAdapter db, Context c) {
+
         mDbHelper = db;
         context = c;
         _id = id;
@@ -65,6 +63,8 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
+
+        ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         Boolean bt, wifi, mobile, networkState;
         bt = wifi = mobile = false;
@@ -100,6 +100,7 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
+            mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
             String providerId = LocationManager.GPS_PROVIDER;
 
             mLocationManager.requestLocationUpdates(providerId, 0, 0, mLocationListener, Looper.getMainLooper());

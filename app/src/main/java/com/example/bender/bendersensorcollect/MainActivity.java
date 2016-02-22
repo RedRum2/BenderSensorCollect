@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -35,8 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SensorManager mSensorManager;
     private List<Sensor> deviceSensor;
-    private TextView tvOutput;
-    private ArrayList<AsyncTask> taskList;
+    private ArrayList<AsyncTask> taskList;        //List containing all the task for the cancel()
     private Boolean tasksCancellable;
     private TimerTask doAsynchronousTask;
     private DbAdapter dbHelper;
@@ -46,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String[] spinner_list;
     private EditText etName;
     private ProgressBar progressBar;
+    private TextView tvOutput;
     private long period;
 
     private static final int REQUEST_LOCATION_PERMISSION = 1;
@@ -94,11 +93,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Start execute a SensorTask for every sensor and device
     public void startScanning()
     {
+        //get id from editText
         String _id = etName.getText().toString();
+
         taskList = new ArrayList<>();
 
-        LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        DeviceTask mDeviceTask = new DeviceTask(_id, period, connectivityManager, locManager, dbHelper, this);
+        DeviceTask mDeviceTask = new DeviceTask(_id, period, dbHelper, this);
         mDeviceTask.execute();
         taskList.add(mDeviceTask);
 
