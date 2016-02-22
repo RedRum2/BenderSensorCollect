@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Bender Sensor Collect</string>
-    <string name="Clean">pulisci</string>
-    <string name="Id">inserisci l\'id</string>
+    <string name="Clean">Pulisci</string>
+    <string name="Id">Inserisci l\'id</string>
     <string name="List">lista</string>
     <string name="Start">scansiona</string>
     <string name="sec">secondi</string>
+    <string name="str_insertName">Inserisce il tuo nome!</string>
+
 </resources>

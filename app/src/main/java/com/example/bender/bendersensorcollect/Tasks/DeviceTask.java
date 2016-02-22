@@ -29,14 +29,16 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
 
     private Context context;
     private String _id;
+    private long period;
 
 
-    public DeviceTask(String id, ConnectivityManager cm, LocationManager lm, DbAdapter db, Context c) {
+    public DeviceTask(String id, long p, ConnectivityManager cm, LocationManager lm, DbAdapter db, Context c) {
         mConnectivityManager = cm;
         mLocationManager = lm;
         mDbHelper = db;
         context = c;
         _id = id;
+        period = p;
     }
 
     private LocationListener mLocationListener = new LocationListener() {
@@ -102,6 +104,7 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
 
             mLocationManager.requestLocationUpdates(providerId, 0, 0, mLocationListener, Looper.getMainLooper());
 
+            //remove the listener that is active yet
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -109,7 +112,7 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
                             ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
                         mLocationManager.removeUpdates(mLocationListener);
                 }
-            }, 5000);
+            }, period);
 
         }
 
@@ -117,7 +120,7 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
     }
 
 
-
+    //Prepare record fields and insert it into the database
     private void registerValues(Boolean deviceConnected, String deviceName) {
         String date = DateFormat.getDateInstance().format(new Date());
         String time = DateFormat.getTimeInstance().format(new Date());
@@ -132,4 +135,11 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
 
     }
 
+    @Override
+    protected void onCancelled(Void aVoid) {
+        super.onCancelled(aVoid);
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            mLocationManager.removeUpdates(mLocationListener);
+    }
 }

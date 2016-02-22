@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String[] spinner_list;
     private EditText etName;
     private ProgressBar progressBar;
+    private long period;
 
     private static final int REQUEST_LOCATION_PERMISSION = 1;
 
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button stopI = (Button) findViewById(R.id.Stop);
         Button cleanI = (Button) findViewById(R.id.Clean);
 
-        spinner_list = new String[]{"1", "5", "10", "15", "30", "60"};
+        spinner_list = new String[]{"5", "10", "15", "30", "60"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, spinner_list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -90,20 +91,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        if (connectivityManager == null)
-//            connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-//    }
-
+    //Start execute a SensorTask for every sensor and device
     public void startScanning()
     {
         String _id = etName.getText().toString();
         taskList = new ArrayList<>();
 
         LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        DeviceTask mDeviceTask = new DeviceTask(_id, connectivityManager, locManager, dbHelper, this);
+        DeviceTask mDeviceTask = new DeviceTask(_id, period, connectivityManager, locManager, dbHelper, this);
         mDeviceTask.execute();
         taskList.add(mDeviceTask);
 
@@ -112,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (sensor.getType() == Sensor.TYPE_SIGNIFICANT_MOTION) {
                 continue;
             }
-            SensorTask mAsyncTask = new SensorTask(_id, sensor, mSensorManager, dbHelper);
+            SensorTask mAsyncTask = new SensorTask(_id, period, sensor, mSensorManager, dbHelper);
             mAsyncTask.execute();
             taskList.add(mAsyncTask);
         }
@@ -123,13 +118,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void callAsynchronousTask() {
         final Handler handler = new Handler();
         Timer timer = new Timer();
-        long period = Long.parseLong(spinner_list[mSpinner.getSelectedItemPosition()]) * 1000;
+        period = Long.parseLong(spinner_list[mSpinner.getSelectedItemPosition()]) * 1000;
 
         doAsynchronousTask = new TimerTask() {
             @Override
             public void run() {
                 handler.post(new Runnable() {
                     public void run() {
+                        //try to cancel
                         if (tasksCancellable)
                             cancelTasks();
 
@@ -152,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.Start:
                 if (etName.getText().toString().isEmpty()) {
-                    Toast.makeText(this, "Insert your name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.str_insertName, Toast.LENGTH_SHORT).show();
                     break;
                 }
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&

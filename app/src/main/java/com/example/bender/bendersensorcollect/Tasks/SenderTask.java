@@ -37,6 +37,7 @@ public class SenderTask extends AsyncTask <Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... params) {
 
+        //Retrieve position from SharedPreferences
         SharedPreferences prefs = context.getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
         position = prefs.getInt("position", 0);
 

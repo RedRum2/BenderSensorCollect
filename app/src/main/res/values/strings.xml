@@ -4,6 +4,7 @@
     <string name="List">list</string>
     <string name="Stop" translatable="false">stop</string>
     <string name="Clean">clean</string>
-    <string name="Id">insert to id</string>
+    <string name="Id">Insert id</string>
     <string name="sec">seconds</string>
+    <string name="str_insertName">Insert your name!</string>
 </resources>

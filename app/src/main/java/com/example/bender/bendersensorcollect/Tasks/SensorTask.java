@@ -19,14 +19,16 @@ public class SensorTask extends AsyncTask<Void, SensorEvent, Void> {
     private Sensor mSensor;
     private DbAdapter mDbHelper;
     private String _id;
+    private long period;
 
 
-    public SensorTask(String id, Sensor sensor, SensorManager msm, DbAdapter db)
+    public SensorTask(String id, long p, Sensor sensor, SensorManager msm, DbAdapter db)
     {
         mSensor = sensor;
         mSensorManager = msm;
         mDbHelper = db;
         _id = id;
+        period = p;
     }
 
     private SensorEventListener mSensorEventListener = new SensorEventListener() {
@@ -44,7 +46,7 @@ public class SensorTask extends AsyncTask<Void, SensorEvent, Void> {
 
     };
 
-
+    //Prepare record fields and insert it into the database
     private void registerValues(SensorEvent event) {
         String date = DateFormat.getDateInstance().format(new Date());
         String time = DateFormat.getTimeInstance().format(new Date());
@@ -65,7 +67,7 @@ public class SensorTask extends AsyncTask<Void, SensorEvent, Void> {
                 if (mSensorEventListener != null)
                     mSensorManager.unregisterListener(mSensorEventListener);
             }
-        }, 5000);
+        }, period);
 
         return null;
     }
