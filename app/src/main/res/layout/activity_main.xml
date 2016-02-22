@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/et_name"
             android:layout_weight="1"
-            android:hint="Inserisci l&apos;id" />
+            android:hint="@string/Id" />
 
         <Spinner
             android:layout_width="wrap_content"
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="seconds" />
+            android:text="@string/sec" />
 
 
     </LinearLayout>
@@ -44,14 +44,14 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start"
+            android:text="@string/Start"
             android:id="@+id/Start"
             android:layout_weight="1" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lista"
+            android:text="@string/List"
             android:id="@+id/Lista"
             android:layout_weight="1" />
     </LinearLayout>
@@ -64,14 +64,14 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Stop"
+            android:text="@string/Stop"
             android:id="@+id/Stop"
             android:layout_weight="1" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="clean"
+            android:text="@string/Clean"
             android:id="@+id/Clean"
             android:layout_weight="1" />
     </LinearLayout>

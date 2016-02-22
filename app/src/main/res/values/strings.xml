@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Bender Sensor Collect</string>
+    <string name="Start">scan</string>
+    <string name="List">list</string>
+    <string name="Stop" translatable="false">stop</string>
+    <string name="Clean">clean</string>
+    <string name="Id">insert to id</string>
+    <string name="sec">seconds</string>
 </resources>
