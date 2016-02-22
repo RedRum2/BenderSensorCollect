@@ -113,7 +113,7 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
 
             mLocationManager.requestLocationUpdates(providerId, 0, 0, mLocationListener, Looper.getMainLooper());
 
-            //remove the listener that is active yet
+            //remove the listener that is active yet after [period] seconds
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {

@@ -9,7 +9,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "sensor_database.db";
     private static final int DATABASE_VERSION = 1;
 
-    // Lo statement SQL di creazione del database
+    // this is the SQL statement for the creation of the database
     private static final String DATABASE_CREATE =
             "CREATE TABLE sensor_collector (" +
             "_id TEXT NOT NULL," +
@@ -23,13 +23,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // Questo metodo viene chiamato durante la creazione del database
+    // This method is called during the creation of the database
     @Override
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);
     }
 
-    // Questo metodo viene chiamato durante l'upgrade del database, ad esempio quando viene incrementato il numero di versione
+    // This method is called during the upgrade of the database, for example when the version's number is increment
     @Override
     public void onUpgrade( SQLiteDatabase database, int oldVersion, int newVersion ) {
 

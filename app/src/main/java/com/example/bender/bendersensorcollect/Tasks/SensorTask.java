@@ -13,7 +13,7 @@ import com.example.bender.bendersensorcollect.database.DbAdapter;
 import java.text.DateFormat;
 import java.util.Date;
 
-
+//create the AsyncTask to register value from sensor and prepare record for database
 public class SensorTask extends AsyncTask<Void, SensorEvent, Void> {
     private SensorManager mSensorManager;
     private Sensor mSensor;
@@ -31,11 +31,12 @@ public class SensorTask extends AsyncTask<Void, SensorEvent, Void> {
         period = p;
     }
 
+    //this is the method used to register a new value from sensor
     private SensorEventListener mSensorEventListener = new SensorEventListener() {
 
         @Override
         public void onSensorChanged(SensorEvent event) {
-            mSensorManager.unregisterListener(this);
+            mSensorManager.unregisterListener(this);    //unregister the Listener to stop new values capture
             registerValues(event);
 
         }
@@ -53,14 +54,15 @@ public class SensorTask extends AsyncTask<Void, SensorEvent, Void> {
         String sensorData = "";
         for (Float value : event.values)
             sensorData += (String.valueOf(value) + ";");
-        mDbHelper.insertValue(_id, date, time, mSensor.getName(), sensorData);
+        mDbHelper.insertValue(_id, date, time, mSensor.getName(), sensorData);  //insert the record into the database
     }
 
-
+    //a new thread use this method to register the listener to a sensor
     @Override
     protected Void doInBackground(Void... params) {
         mSensorManager.registerListener(mSensorEventListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
+        //remove the listener that is active yet after [period] seconds
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -75,7 +77,7 @@ public class SensorTask extends AsyncTask<Void, SensorEvent, Void> {
     @Override
     protected void onCancelled() {
         super.onCancelled();
-
+        //this method unregister the listener
         mSensorManager.unregisterListener(mSensorEventListener);
     }
 

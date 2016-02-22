@@ -64,7 +64,7 @@ public class DbAdapter {
     //delete all records of the database table
     public void delete()
     {
-        String sqltext="DELETE FROM " + DATABASE_TABLE;
+        String sqltext = "DELETE FROM " + DATABASE_TABLE;
         database.execSQL(sqltext);
     }
 
