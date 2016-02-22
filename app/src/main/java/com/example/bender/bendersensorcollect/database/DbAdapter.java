@@ -61,12 +61,14 @@ public class DbAdapter {
                 null, null, null, null, null);
     }
 
+    //delete all records of the database table
     public void delete()
     {
         String sqltext="DELETE FROM " + DATABASE_TABLE;
         database.execSQL(sqltext);
     }
 
+    //enter a record in the database
     synchronized public void insertValue(String _id, String date, String time, String device, String data) {
         this.open();
         this.createSensorData(_id, date, time, device, data);

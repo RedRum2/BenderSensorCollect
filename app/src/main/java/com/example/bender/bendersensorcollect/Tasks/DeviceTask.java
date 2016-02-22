@@ -31,6 +31,7 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
     private long period;
 
 
+    //the class constructor
     public DeviceTask(String id, long p, DbAdapter db, Context c) {
 
         mDbHelper = db;
@@ -39,16 +40,18 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
         period = p;
     }
 
+    //listener which allows you to check whether the GPS is on or off
     private LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
-
+        //method that recognizes if the GPS is active
         @Override
         public void onProviderEnabled(String provider) {
             registerValues(true, "GPS");
         }
 
+        //method that recognizes if the GPS is not active
         @Override
         public void onProviderDisabled(String provider) {
             registerValues(false, "GPS");
@@ -61,6 +64,7 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
     };
 
 
+    //in doInBackground take the states of sensors and inserts them into the database
     @Override
     protected Void doInBackground(Void... params) {
 
@@ -69,9 +73,12 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
         Boolean bt, wifi, mobile, networkState;
         bt = wifi = mobile = false;
 
+        //you see if your device is connected to the Internet
         if (MainActivity.isConnectedToInternet()) {
+            //List of network sensors in the device
             Network[] networks = mConnectivityManager.getAllNetworks();
 
+            //loop that scans all networks that are on the list to see if they are active or not
             for (Network network : networks) {
                 NetworkInfo networkInfo = mConnectivityManager.getNetworkInfo(network);
                 networkState = networkInfo.isAvailable() && networkInfo.isConnected();
@@ -96,6 +103,7 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
         registerValues(bt, "BLUETOOTH");
         registerValues(wifi, "WIFI");
         registerValues(mobile, "MOBILE");
+
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -127,6 +135,7 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
         String time = DateFormat.getTimeInstance().format(new Date());
         String DeviceData;
 
+
         if (deviceConnected)
             DeviceData = "1;";
         else
@@ -136,6 +145,7 @@ public class DeviceTask extends AsyncTask<Void, NetworkInfo, Void> {
 
     }
 
+    //closes the GPS listener
     @Override
     protected void onCancelled(Void aVoid) {
         super.onCancelled(aVoid);
