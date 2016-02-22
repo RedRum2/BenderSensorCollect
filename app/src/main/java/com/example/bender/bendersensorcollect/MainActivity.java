@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText etName;
     private ProgressBar progressBar;
     private TextView tvOutput;
+    private Button startI;
+    private Button stopI;
     private long period;    //Sampling time selected by the user
 
     private static final int REQUEST_LOCATION_PERMISSION = 1;
@@ -66,9 +68,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSpinner = (Spinner) findViewById(R.id.spinner);
         etName = (EditText) findViewById(R.id.et_name);
         Button lista = (Button) findViewById(R.id.Lista);
-        Button startI = (Button) findViewById(R.id.Start);
-        Button stopI = (Button) findViewById(R.id.Stop);
         Button cleanI = (Button) findViewById(R.id.Clean);
+        startI = (Button) findViewById(R.id.Start);
+        stopI = (Button) findViewById(R.id.Stop);
 
         spinner_list = new String[]{"5", "10", "15", "30", "60"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
@@ -157,6 +159,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(this, R.string.str_insertName, Toast.LENGTH_SHORT).show();
                     break;
                 }
+                startI.setVisibility(View.INVISIBLE);
+                stopI.setVisibility(View.VISIBLE);
                 //check GPS Permissions
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
@@ -170,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tvOutput.append(sensor.getName() + "\n");
                 break;
             case R.id.Stop:
+                stopI.setVisibility(View.INVISIBLE);
+                startI.setVisibility(View.VISIBLE);
                 progressBar.setIndeterminate(false);
                 if (taskList != null && doAsynchronousTask != null) {
                     cancelTasks();
